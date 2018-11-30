@@ -3,7 +3,7 @@ CLS
 title backup 1c basescm
 REM initialization variable
 SET PGBIN=C:\Program Files\PostgreSQL\10.3-2.1C\bin
-SET BASES=kias2018 kiasZup tableDatabase
+SET BASES=namebase1 namebase2 namebase3
 SET RAR=C:\Program Files\WinRAR
 SET BACKUP=D:\backup\Backup
 SET CLOUD=D:\backup_synscloud\1Cbackup
