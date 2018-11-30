@@ -1,0 +1,40 @@
+CLS
+@ECHO off
+title backup 1c basescm
+REM initialization variable
+SET PGBIN=C:\Program Files\PostgreSQL\10.3-2.1C\bin
+SET BASES=kias2018 kiasZup tableDatabase
+SET RAR=C:\Program Files\WinRAR
+SET BACKUP=D:\backup\Backup
+SET CLOUD=D:\backup_synscloud\1Cbackup
+REM go to the .bat file directory
+%~d0
+CD %~dp0
+REM generation of backup file name and report file
+REM backup creation
+IF NOT EXIST Backup MD Backup
+FOR %%t in (%BASES%) do (
+	CALL "%PGBIN%\pg_dump.exe" -UdatabaseMaster %%t >"Backup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.sql"
+	  
+	  REM backup archive creation with source file deletion
+      "%RAR%\rar.exe" a -ep -df D:\backup\Backup%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.sql D:\backup\Backup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.rar
+      REM copy archive to cloud for synchronization
+      COPY D:\backup\Backup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.rar D:\backup_synscloud\1Cbackup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.rar
+	  
+		REM completion code analysis
+		IF NOT %ERRORLEVEL%==0 (
+		REM in case of an error, the damaged backup is deleted and a corresponding log entry is made.
+		DEL "Backup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.sql"
+		MSG * ошибка при создании резервной копии базы данных. смотрите backup.log."
+		ECHO %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2% ошибки при создании резервной копии базы данных %%t. смотрите отчет %LOGFILE%. >> backup.log
+	) else (
+		REM в successful backups are simply logged
+		ECHO %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2% успешное создание резервной копии базы %%t >> backup.log
+	)	
+)
+rem clearing old data
+ECHO %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2% ”далены:  >> backup.log
+rem output files to be deleted
+forfiles /p "D:\backup\Backup" /d -3 /c "cmd /c del @path /q"
+REM cleaning files in the cloud
+forfiles /p "D:\backup_synscloud\1Cbackup" /d -3 /c "cmd /c del @path /q"
