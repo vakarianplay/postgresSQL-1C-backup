@@ -3,7 +3,7 @@ CLS
 title backup 1c basescm
 REM initialization variable
 SET PGBIN=C:\Program Files\PostgreSQL\10.3-2.1C\bin
-SET BASES=namebase1 namebase2 namebase3
+SET BASES=kias2018 kiasZup tableDatabase
 SET RAR=C:\Program Files\WinRAR
 SET BACKUP=D:\backup\Backup
 SET CLOUD=D:\backup_synscloud\1Cbackup
@@ -17,9 +17,9 @@ FOR %%t in (%BASES%) do (
 	CALL "%PGBIN%\pg_dump.exe" -UdatabaseMaster %%t >"Backup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.sql"
 	  
 	  REM backup archive creation with source file deletion
-      "%RAR%\rar.exe" a -ep -df D:\backup\Backup%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.sql D:\backup\Backup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.rar
+      "%RAR%\rar.exe" a -ep -df "D:\backup\Backup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.rar" "D:\backup\Backup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.sql"
       REM copy archive to cloud for synchronization
-      COPY D:\backup\Backup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.rar D:\backup_synscloud\1Cbackup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.rar
+      COPY "D:\backup\Backup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.rar" "D:\backup_synscloud\1Cbackup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.rar"
 	  
 		REM completion code analysis
 		IF NOT %ERRORLEVEL%==0 (
