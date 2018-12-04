@@ -25,11 +25,11 @@ FOR %%t in (%BASES%) do (
 		IF NOT %ERRORLEVEL%==0 (
 		REM in case of an error, the damaged backup is deleted and a corresponding log entry is made.
 		DEL "Backup\%%t %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2%.sql"
-		MSG * ошибка при создании резервной копии базы данных. смотрите backup.log."
-		ECHO %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2% ошибки при создании резервной копии базы данных %%t. смотрите отчет %LOGFILE%. >> backup.log
+		MSG * Error while backing up the database. see backup.log."
+		ECHO %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2% errors when creating a backup database %%t. see report %LOGFILE%. >> backup.log
 	) else (
 		REM в successful backups are simply logged
-		ECHO %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2% успешное создание резервной копии базы %%t >> backup.log
+		ECHO %DATE:~6,4%-%DATE:~3,2%-%DATE:~0,2% %TIME:~0,2%-%TIME:~3,2% successful database backup %%t >> backup.log
 	)	
 )
 rem clearing old data
